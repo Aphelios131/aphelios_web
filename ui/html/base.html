@@ -1,0 +1,65 @@
+{{define "base"}}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/styles/github-dark.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/highlight.min.js"></script>
+        <title>{{template "title" .}}</title>
+
+        <style type="text/tailwindcss">
+            @layer components {
+                .rich-content h2 {
+                    @apply text-[#d7827e] text-3xl font-bold my-6 text-center;
+                }
+                .rich-content pre {
+                    @apply max-w-3xl p-4 rounded-lg overflow-x-auto my-4 mx-auto bg-gray-800;
+                }
+
+                .rich-content code {
+                    @apply my-2 text-white text-left;
+                }
+
+                .rich-content  {
+                    @apply my-2 text-white text-center;
+                }
+            }
+            
+
+            
+        </style>
+    </head>
+
+    <body class="bg-emerald-950">
+            {{template "nav" .}}
+        <main>
+            <!-- {{with .Flash}}
+                <div class="text-2xl font-bold my-4 text-center text-red-900">{{.}}</div>
+            {{end}} -->
+
+            {{with .Flash}}
+            <div id="flash-toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-red-100 border-2 border-red-700 text-red-900 px-6 py-3 rounded-lg shadow-lg text-lg font-bold">
+            {{.}}
+            </div>
+            <script>
+            // 3秒后自动消失
+            setTimeout(() => {
+            const toast = document.getElementById('flash-toast');
+            if (toast) toast.remove();
+            }, 3000);
+            </script>
+            {{end}}
+            {{template "main" .}}
+        </main>
+
+        <script>
+        // DOM加载完成后自动高亮页面里所有 <pre><code>
+        document.addEventListener('DOMContentLoaded', function() {
+        hljs.highlightAll();
+        });
+        </script>
+    </body>
+</html>
+{{end}}

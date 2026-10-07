@@ -1,0 +1,19 @@
+{{define "title"}}
+Blog
+{{end}}
+
+{{define "main"}}
+    {{if .IsAuthenticated}}
+        <div class="text-center">
+            <a href="/admin/blog/{{.Form.Blog.Path}}" class="inline-block bg-emerald-700 py-3 px-5 rounded-full hover:bg-emerald-500 transition-colors">Edit</a>
+        </div>
+    {{end}}
+    <h2 class="my-6 text-2xl text-[#d7827e] text-center">{{ .Form.Blog.Title }}</h2>
+    <p>
+    <small class="my-6 block text-white text-center">Created on {{ .Form.Blog.CreatedAt | formatDate }}</small>
+    </p>
+    <!-- max-w-5xl p-4 rounded-lg overflow-x-auto my-4 mx-auto text-white text-center -->
+    <div class="rich-content">
+        {{ .Form.Blog.HTML.Text }}
+    </div>
+{{end}}

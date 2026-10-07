@@ -1,0 +1,27 @@
+{{define "nav"}}
+<header class="max-w-5xl mx-auto px-5 py-3">
+    <h1 class="text-white text-4xl font-bold my-4 text-center">aphelios.io</h1>
+        <nav class="text-white max-w-96 mx-auto">
+            <ul class="flex justify-center sm:justify-between">
+                <a href="/" class="px-3">Home</a>
+                <a href="#" class="px-3">Now</a>
+                <a href="#" class="px-3">About</a>
+                <a href="/blog" class="px-3">Blog</a>
+                <a href="#" class="px-3">BookShelf</a>
+                <a href="/til" class="px-3">Til</a>
+            </ul>
+            <div class="text-white flex justify-center">
+                {{if .IsAuthenticated}}
+                    <form action="/admin/logout" method="POST"> 
+                        <!-- Include the CSRF token -->
+                        <input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
+                        <button type="submit" class="hover:underline">Logout</button>
+                    </form>
+                {{else}}
+                    <a href="/admin/signup" class="px-3 hover:underline">SignUp</a>
+                    <a href="/admin/login" class="px-3 hover:underline">Login</a>
+                {{end}}
+            </div>
+        </nav>
+</header>
+{{end}}

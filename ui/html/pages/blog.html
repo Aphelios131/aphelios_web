@@ -1,0 +1,15 @@
+{{define "title"}}
+Blog
+{{end}}
+
+
+{{define "main"}}
+    {{if .IsAuthenticated}}
+        <a href="/admin/new_blog">new blog</a>
+    {{end}}
+    <div>
+        {{ range .Blogs }}
+            <a href="/blog/{{ .Path }}"> {{ .Title }} </a>
+        {{end}}
+    </div>
+{{end}}

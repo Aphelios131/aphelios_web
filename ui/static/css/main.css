@@ -1,0 +1,41 @@
+html {
+    background-color: bisque;
+}
+
+header > h1  {
+    text-align: center;
+}
+
+header > nav * {
+    text-align: center;
+}
+/* 
+header > nav > ul > li > a {
+	text-decoration: underline;
+} */
+
+header ul {
+	padding-inline-start: 0;
+}
+
+header > nav > ul > li {
+	list-style: none;
+	padding: 0.2em 0.4em;
+}
+
+/* header > nav *{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+header > nav > ul > li {
+	list-style: none;
+	padding: 0.2em 0.4em;
+}
+
+ */
+
+header > nav > ul > li > a.active {
+	text-decoration: none;
+	font-weight: 600;
+}

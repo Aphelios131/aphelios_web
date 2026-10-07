@@ -1,0 +1,37 @@
+{{define "title"}}
+Tody I learned
+{{end}}
+
+{{define "main"}}
+<div class="text-white py-5">
+    <h2 class="text-center text-3xl font-bold">Today I learn</h2>
+    <div class="text-center py-4">
+        <a href="/admin/new_til" class="inline-block bg-emerald-700 py-3 px-5 rounded-full hover:bg-emerald-500 transition-colors">new TIL</a> 
+    </div>
+    {{$root := .}}
+    <section class="max-w-3xl lg:max-w-5xl text-center mx-auto px-5 py-12 grid gap-5 grid-cols-3">
+        {{range .TILs}}
+            <div class="bg-blue-400 bg-gradient-to-bl even:bg-gradient-to-tr from-emerald-700 to-blue-300 space-y-2 p-3 rounded-md relative">
+                {{if $root.IsAuthenticated}}
+                    <div class="absolute top-2 right-2">
+                        <form action="/admin/delete_til/{{ .Path }}" method="post" onsubmit="return confirm('Do you really want to delete this til?');">
+                            <input type='hidden' name='csrf_token' value='{{$root.CSRFToken}}'>
+                            <button type="submit" class="font-bold p-1 text-xs text-red-800 bg-red-100 border border-red-400 rounded">delete</button>
+                        </form>
+                    </div>
+                {{end}}
+                <h3 class="text-lg font-bold">{{ .Title }}</h3>
+                <small>{{ .CreatedAt | formatDate }}</small>
+                <div>{{ .HTML.Summary }}</div>
+                <small class="bg-blue-300 px-1 rounded-full">{{ .Category }}</small>
+                <div>
+                    <a href="/today-i-learned/{{ .Path }}" class="font-bold text-indigo-500 hover:text-white transition-colors after:content-['>'] after:ml-2 after:opacity-0 hover:after:opacity-100">read more</a>
+                </div>
+
+            </div>
+        {{end}}
+    </section>
+</div>
+{{end}}
+
+

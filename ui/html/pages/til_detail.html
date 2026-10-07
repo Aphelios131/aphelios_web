@@ -1,0 +1,23 @@
+{{define "title"}}
+Tody I learned
+{{end}}
+
+{{define "main"}}
+    {{if .IsAuthenticated}}
+        <div class="text-center">
+            <a href="/admin/til/{{.Form.Til.Path}}" class="inline-block bg-emerald-700 py-3 px-5 rounded-full hover:bg-emerald-500 transition-colors">Edit</a>
+        </div>
+    {{end}}
+    <!-- <p>
+    <small class="my-6 block text-white text-center">Created on {{ .Form.Til.CreatedAt | formatDate }}</small>
+    </p>
+    <p>
+    <small class="my-6 block text-white text-center"><code>{{ .Form.Til.Category }}</code></small>
+    </p> -->
+    <div class = "text-[#d7827e] text-3xl font-bold my-6 text-center">{{ .Form.Til.Title }} </div>
+    <small class="my-6 block text-white text-center">Created on {{ .Form.Til.CreatedAt | formatDate }}</small>
+    <small class="my-4 block text-white text-center"><code>{{ .Form.Til.Category }}</code></small>
+    <div class="rich-content">
+        {{ .Form.Til.HTML.Text }} 
+    </div>
+{{end}}

@@ -1,0 +1,88 @@
+{{define "title"}}
+New Til
+{{end}}
+
+{{define "main"}}
+    <div>
+        <form action="/admin/new_til" method="post">
+            <!-- Include the CSRF token -->
+            <input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
+            {{if eq .Form.Til.Id 0 }}
+                 <h2 class="text-2xl text-center text-red-500">New TIL</h2>
+            {{else}}
+                 <h2 class="text-2xl text-center text-red-500">Edit TIL</h2>
+            {{end}}
+            <fieldset>
+                {{- if .Form.Til.Id }}
+                    <div class="text-center text-xl text-white text-font py-4">
+                        <label>Id:</label>
+                        <input name="til-id" type="int" aria-label="til-id" value="{{ .Form.Til.Id }}" readonly class="text-black rounded-lg border-2 border-gray-500 focus:border-gray-700 px-2 py-1">
+                    </div>
+                {{end}}
+                
+                <div class="text-center text-xl text-white text-font py-4">
+                    <label>Path:</label>
+                    {{with .Form.FieldErrors.path}}
+                        <label>{{.}}</label>
+                    {{end}}
+                    <input name="til-path" type="int" aria-label="til-path" value="{{ .Form.Til.Path }}" class="text-black rounded-lg border-2 border-gray-500 focus:border-gray-700 px-2 py-1">
+                </div>
+
+                
+                <div class="text-center text-xl text-white text-font py-4">
+                    <label>Title:</label>
+                    {{with .Form.FieldErrors.title}}
+                        <label>{{.}}</label>
+                    {{end}}
+                    <input name="til-title" type="text" value="{{ .Form.Til.Title }}" class="text-black rounded-lg border-2 border-gray-500 focus:border-gray-700 px-2 py-1" />
+                </div>
+
+                <div class="text-center text-xl text-white text-font py-4">
+                    <label>Category:</label>
+                    {{with .Form.FieldErrors.category}}
+                        <label>{{.}}</label>
+                    {{end}}
+                    <input name="til-category" type="text" value="{{ .Form.Til.Category }}" class="text-black" />
+                </div>
+<!-- 
+                <label>Summary</label>
+                {{with .Form.FieldErrors.summary}}
+                    <label>{{.}}</label>
+                {{end}}
+                <textarea name="til-summary" rows="3"></textarea> -->
+
+                <div class="text-center text-xl text-white text-font py-4">
+                    <label>Summary:</label>
+                </div>
+                {{with .Form.FieldErrors.summary}}
+                    <label>{{.}}</label>
+                {{end}}
+                <div class="text-center text-black text-font py-2">
+                    <textarea name="til-summary" rows="3" class="w-96 resize-y min-h-24 max-h-48 text-black rounded-lg border-2 border-gray-500 focus:border-gray-700 px-2 py-1">{{ .Form.Til.Summary }}</textarea>
+                </div>
+
+                <!-- <label>Text</label>
+                {{with .Form.FieldErrors.text}}
+                    <label>{{.}}</label>
+                {{end}}
+                <textarea name="til-text" rows="10"></textarea> -->
+
+                <div class="text-center text-xl text-white text-font py-4">
+                    <label>Text:</label>
+                </div>
+                {{with .Form.FieldErrors.text}}
+                    <label>{{.}}</label>
+                {{end}}
+                <div class="text-center text-black text-font py-2">
+                    <textarea name="til-text" rows="10" class="max-w-2xl w-full resize-y min-h-24 max-h-48 text-black rounded-lg border-2 border-gray-500 focus:border-gray-700 px-2 py-1">{{ .Form.Til.Text }}</textarea>
+                </div>
+            </fieldset>
+            <div class="text-center py-4">
+                <button type="submit" class="inline-block bg-emerald-700 py-3 px-5 rounded-full hover:bg-emerald-500 transition-colors text-red-500">
+                    {{if eq .Form.Til.Id 0}}Create{{else}}Update{{end}}
+                </button>
+            </div>
+
+        </form>
+    </div>
+{{end}}

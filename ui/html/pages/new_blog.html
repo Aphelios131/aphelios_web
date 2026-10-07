@@ -1,0 +1,51 @@
+{{define "title"}}
+New blog
+{{end}}
+
+{{define "main"}}
+    <div>
+        <form action="/admin/new_blog" method="post">
+            <!-- Include the CSRF token -->
+            <input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
+            {{if eq .Form.Blog.Id 0}}
+                <h2>New Blog</h2>
+            {{else}}
+                <h2>Edit Blog</h2>
+            {{end}}
+            <fieldset>
+                {{- if .Form.Blog.Id }}
+                    <label>Id:</label>
+                    <input name="blog-id" type="int" aria-label="blog-id" value="{{ .Form.Blog.Id }}" readonly />
+                {{end}}
+                <label>Path:</label>
+                {{with .Form.FieldErrors.path}}
+                    <label>{{.}}</label>
+                {{end}}
+                <input name="blog-path" type="text" />
+                <label>Title:</label>
+                {{with .Form.FieldErrors.title}}
+                    <label>{{.}}</label>
+                {{end}}
+                <input name="blog-title" type="text" />
+                <label>Category:</label>
+                {{with .Form.FieldErrors.category}}
+                    <label>{{.}}</label>
+                {{end}}
+                <input name="blog-category" type="text" />
+                <label>Summary</label>
+                {{with .Form.FieldErrors.summary}}
+                    <label>{{.}}</label>
+                {{end}}
+                <textarea name="blog-summary" rows="3"></textarea>
+                <label>Text</label>
+                {{with .Form.FieldErrors.text}}
+                    <label>{{.}}</label>
+                {{end}}
+                <textarea name="blog-text" rows="10"></textarea>
+            </fieldset>
+            <button type="submit" class="stack-exception-large">
+                {{if eq .Form.Blog.Id 0}}Create{{else}}Update{{end}}
+            </button>
+        </form>
+    </div>
+{{end}}

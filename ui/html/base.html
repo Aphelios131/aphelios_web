@@ -1,5 +1,5 @@
 {{define "base"}}
-<!DOCTYPE html>
+<!DOCTYPE html class="h-full">
 <html lang="en">
     <head>
         <meta charset="utf-8">
@@ -32,9 +32,9 @@
         </style>
     </head>
 
-    <body class="bg-emerald-950">
+    <body class="bg-emerald-950 h-full flex flex-col">
             {{template "nav" .}}
-        <main>
+        <main class="flex-grow">
             <!-- {{with .Flash}}
                 <div class="text-2xl font-bold my-4 text-center text-red-900">{{.}}</div>
             {{end}} -->
@@ -60,6 +60,12 @@
         hljs.highlightAll();
         });
         </script>
+
+        <footer class="text-white text-center">
+            <h1>power by aphelios</h1>
+            <small><a href="https://github.com/Aphelios131/aphelios_web.git">
+            GitHub</a></small>
+        </footer>
     </body>
 </html>
 {{end}}

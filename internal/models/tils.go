@@ -69,7 +69,7 @@ func (tilm *TilModel) GetAll() (TILs, error) {
 	return tils, err
 }
 
-//路径查询
+// 路径查询
 func (tilm *TilModel) GetByPath(path string) (Til, error) {
 	stmt := `select id, title, category, summary, text, created_at, updated_at from til where path = $1`
 	row := tilm.DB.QueryRow(stmt, path)

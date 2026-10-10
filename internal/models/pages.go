@@ -9,12 +9,12 @@ import (
 )
 
 type Page struct {
-	Id           int
-	Name         string
-	Version      int
-	Content      string
-	CreatedAt    time.Time
-	HTMLContent  template.HTML
+	Id          int
+	Name        string
+	Version     int
+	Content     string
+	CreatedAt   time.Time
+	HTMLContent template.HTML
 }
 
 type PageModel struct {

@@ -4,7 +4,7 @@ import (
 	"net/http"
 )
 
-//Get Home
+// Get Home
 func (app *application) Home(w http.ResponseWriter, r *http.Request) {
 	//`ParseFiles` 支持多文件 多个文件时，**第一个文件名字作为模板名**，其他作为关联模板。
 	page, err := app.pages.Get("Home")
@@ -45,7 +45,7 @@ func (app *application) Home(w http.ResponseWriter, r *http.Request) {
 	//w.Write([]byte("This is my website"))
 }
 
-//Get SignUp
+// Get SignUp
 func (app *application) SignUp(w http.ResponseWriter, r *http.Request) {
 	data := app.NewtemplateData(r)
 	app.templateExcute(w, "signup.html", 200, data)
@@ -72,7 +72,7 @@ func (app *application) SignUpPost(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/admin/login", http.StatusSeeOther)
 }
 
-//Get Login
+// Get Login
 func (app *application) Login(w http.ResponseWriter, r *http.Request) {
 	data := app.NewtemplateData(r)
 	flash := app.sessionManager.PopString(r.Context(), "flash")
@@ -80,7 +80,7 @@ func (app *application) Login(w http.ResponseWriter, r *http.Request) {
 	app.templateExcute(w, "login.html", 200, data)
 }
 
-//Post login
+// Post login
 func (app *application) LoginPost(w http.ResponseWriter, r *http.Request) {
 	var UserLoginForm struct {
 		Email    string `form:"email"`
@@ -108,7 +108,6 @@ func (app *application) LoginPost(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
-//
 func (app *application) Logout(w http.ResponseWriter, r *http.Request) {
 	err := app.sessionManager.RenewToken(r.Context())
 	if err != nil {

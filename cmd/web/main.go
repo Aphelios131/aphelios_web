@@ -14,6 +14,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 )
+
 type application struct {
 	pages          *models.PageModel
 	tils           *models.TilModel
@@ -83,7 +84,6 @@ func main() {
 	}
 	fmt.Println("db connection success")
 	defer db.Close()
-
 
 	templateHtml, err := newTemplates()
 	if err != nil {

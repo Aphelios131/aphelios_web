@@ -1,0 +1,20 @@
+@import "tailwindcss";
+@source "../../ui/html/**/*.html";
+
+
+@layer components {
+    .rich-content h2 {
+        @apply text-[#d7827e] text-3xl font-bold my-6 text-center;
+    }
+    .rich-content pre {
+        @apply max-w-3xl p-4 rounded-lg overflow-x-auto my-4 mx-auto bg-gray-800;
+    }
+
+    .rich-content code {
+        @apply my-2 text-white text-left;
+    }
+
+    .rich-content  {
+        @apply my-2 text-white text-center;
+    }
+}

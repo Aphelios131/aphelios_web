@@ -43,7 +43,7 @@ func (app *application) TodayILearnPath(w http.ResponseWriter, r *http.Request) 
 
 }
 
-//显示新增til界面
+// 显示新增til界面
 func (app *application) New_til(w http.ResponseWriter, r *http.Request) {
 	data := app.NewtemplateData(r)
 	data.Form = TilForm{Til: models.Til{}}

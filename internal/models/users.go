@@ -3,8 +3,8 @@ package models
 import (
 	"database/sql"
 	"fmt"
-	"strings"
 	"golang.org/x/crypto/bcrypt"
+	"strings"
 )
 
 type Users struct {
@@ -17,7 +17,7 @@ type UserModel struct {
 	DB *sql.DB
 }
 
-//user 插入数据
+// user 插入数据
 func (um *UserModel) Insert(email, password string) error {
 	hash_byte, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {

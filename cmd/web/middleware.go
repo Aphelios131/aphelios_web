@@ -8,7 +8,7 @@ import (
 	"github.com/justinas/nosurf"
 )
 
-//中间件 保护路由 确认访问路由需要登陆 没有登陆返回登陆界面
+// 中间件 保护路由 确认访问路由需要登陆 没有登陆返回登陆界面
 func (app *application) requireAuthentication(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// 如果用户未通过身份验证，则将其重定向到登录页面并
@@ -26,7 +26,7 @@ func (app *application) requireAuthentication(next http.Handler) http.Handler {
 	})
 }
 
-//中间件 判断用户登陆,将isAuthenticatedContextKey改为true
+// 中间件 判断用户登陆,将isAuthenticatedContextKey改为true
 func (app *application) authenticates(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		id := app.sessionManager.GetInt(r.Context(), "authenticatedUserID")

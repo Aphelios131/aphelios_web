@@ -30,7 +30,6 @@ func DefaultPostgresConfig() PostGresConfig {
 	}
 }
 
-
 func Open(config PostGresConfig) (*sql.DB, error) {
 	db, err := sql.Open("pgx", config.String())
 	if err != nil {

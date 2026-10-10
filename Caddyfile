@@ -1,0 +1,8 @@
+http://47.122.112.40 {
+    reverse_proxy app:8080 {
+        header_up Host {host}
+        header_up X-Real-IP {remote}
+        header_up X-Forwarded-For {remote}
+        header_up X-Forwarded-Proto http
+    }
+}

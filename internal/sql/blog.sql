@@ -1,4 +1,4 @@
-CREATE TABLE aphelios_website.blog (
+CREATE TABLE blog (
 	id         int PRIMARY KEY auto_increment,
 	path       TEXT NOT NULL UNIQUE,
 	title      TEXT NOT NULL,

@@ -33,7 +33,7 @@ func formatDate(t time.Time) string {
 	return t.UTC().Format("02 Jan 2006 at 15:04")
 }
 
-//本质上是一个字符串键映射，它充当查找表，将名称映射到函数。
+// 本质上是一个字符串键映射，它充当查找表，将名称映射到函数。
 var functions = template.FuncMap{
 	"formatDate": formatDate,
 }
@@ -57,7 +57,7 @@ func (app *application) NewtemplateData(r *http.Request) templateData {
 	}
 }
 
-//将所有模版加载
+// 将所有模版加载
 func newTemplates() (map[string]*template.Template, error) {
 	cache := map[string]*template.Template{}
 

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"aphelios_website/validator"
 	"net/http"
 )
 
@@ -45,25 +46,37 @@ func (app *application) Home(w http.ResponseWriter, r *http.Request) {
 	//w.Write([]byte("This is my website"))
 }
 
+type UserSignupForm struct {
+		Email    string `form:"email"`
+		Password string `form:"password"`
+		validator.Validator `form:"-"`
+}
 // Get SignUp
 func (app *application) SignUp(w http.ResponseWriter, r *http.Request) {
 	data := app.NewtemplateData(r)
+	data.Form = UserSignupForm{}
 	app.templateExcute(w, "signup.html", 200, data)
 }
 
 func (app *application) SignUpPost(w http.ResponseWriter, r *http.Request) {
 
-	var UserSignupForm struct {
-		Email    string `form:"email"`
-		Password string `form:"password"`
-	}
-	err := app.decodePostForm(r, &UserSignupForm)
+	var userSignupForm UserSignupForm 
+	err := app.decodePostForm(r, &userSignupForm)
 	if err != nil {
 		app.logError(r, err)
 		return
 	}
 
-	err = app.users.Insert(UserSignupForm.Email, UserSignupForm.Password)
+	//验证邮箱格式
+	userSignupForm.CheckField(validator.Matches(userSignupForm.Email, validator.EmailRX), "Email", "Email格式不符合")
+
+	if !userSignupForm.Valid() {
+		data := app.NewtemplateData(r)
+		data.Form = userSignupForm
+		app.templateExcute(w, "signup.html", http.StatusUnprocessableEntity, data)
+	}
+
+	err = app.users.Insert(userSignupForm.Email, userSignupForm.Password)
 	if err != nil {
 		app.logError(r, err)
 		return

@@ -11,6 +11,9 @@ Signup
             <div class="pt4 pb-8 py-4 font-bold text-3xl text-center">Welconme to This web site</div>
             <div class="py-2">
                 <label  class="text-sm font-semibold">Email</label>
+                {{with .Form.FieldErrors.email}}
+                    <label class="text-[#C0392B] font-bold block mt-1 text-sm">{{.}}</label>
+                {{end}}
                 <input type="email" name="email" placeholder="example@email.com" required 
                 class="w-full px-2 py-2 text-black" >
             </div>

@@ -14,7 +14,7 @@ type BlogForm struct {
 
 func (app *application) Blog(w http.ResponseWriter, r *http.Request) {
 	data := app.NewtemplateData(r)
-	blogs, err := app.blogs.GetAll()
+	blogs, err := app.models.BolgM.GetAll()
 	if err != nil {
 		fmt.Printf("Get all err:%v", err)
 		return
@@ -27,7 +27,7 @@ func (app *application) Blog(w http.ResponseWriter, r *http.Request) {
 func (app *application) blogPath(w http.ResponseWriter, r *http.Request) {
 	path := r.PathValue("path")
 
-	blog, err := app.blogs.GetByPath(path)
+	blog, err := app.models.BolgM.GetByPath(path)
 	if err != nil {
 		fmt.Printf("GetByPath err:%v", err)
 		return
@@ -47,7 +47,7 @@ func (app *application) New_blog(w http.ResponseWriter, r *http.Request) {
 
 func (app *application) Update_blog(w http.ResponseWriter, r *http.Request) {
 	path := r.PathValue("path")
-	Blog, err := app.blogs.GetByPath(path)
+	Blog, err := app.models.BolgM.GetByPath(path)
 	if err != nil {
 		fmt.Printf("GetByPath:%v", err)
 		return
@@ -90,13 +90,13 @@ func (app *application) BlogPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if BlogForm.Blog.Id == 0 {
-		err = app.blogs.Insert(BlogForm.Blog)
+		err = app.models.BolgM.Insert(BlogForm.Blog)
 		if err != nil {
 			fmt.Printf("app.til.Insert(): %v\n", err)
 			// TODO: send some notification to the UI
 		}
 	} else {
-		err = app.blogs.Update(BlogForm.Blog)
+		err = app.models.BolgM.Update(BlogForm.Blog)
 		if err != nil {
 			fmt.Printf("app.til.UpdateExisting(): %v\n", err)
 			// TODO: send some notification to the UI

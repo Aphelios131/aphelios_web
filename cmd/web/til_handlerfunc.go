@@ -15,22 +15,19 @@ type TilForm struct {
 
 func (app *application) TodayILearn(w http.ResponseWriter, r *http.Request) {
 	data := app.NewtemplateData(r)
-	data.Title = "Today I Learn"
-	data.RootPath = "/today-i-learned"
-	tils, err := app.tils.GetAll()
+	tils, err := app.models.TilsM.GetAll()
 	if err != nil {
 		log.Println(err)
 		return
 	}
 
 	data.TILs = tils
-	data.SideBars = false
 	app.templateExcute(w, "tils.html", 200, data)
 }
 
 func (app *application) TodayILearnPath(w http.ResponseWriter, r *http.Request) {
 	path := r.PathValue("path")
-	til, err := app.tils.GetByPath(path)
+	til, err := app.models.TilsM.GetByPath(path)
 	if err != nil {
 		fmt.Printf("app.til.GetBy(%v): %v", path, err)
 		http.NotFound(w, r)
@@ -52,7 +49,7 @@ func (app *application) New_til(w http.ResponseWriter, r *http.Request) {
 
 func (app *application) Update_til(w http.ResponseWriter, r *http.Request) {
 	path := r.PathValue("path")
-	til, err := app.tils.GetByPath(path)
+	til, err := app.models.TilsM.GetByPath(path)
 	if err != nil {
 		fmt.Printf("GetByPath err:%v", err)
 		return
@@ -103,13 +100,13 @@ func (app *application) TilsPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if TilsForm.Til.Id == 0 {
-		err = app.tils.Insert(&TilsForm.Til)
+		err = app.models.TilsM.Insert(&TilsForm.Til)
 		if err != nil {
 			log.Printf("app.til.Insert(): %v\n", err)
 			// TODO: send some notification to the UI
 		}
 	} else {
-		err = app.tils.Update(&TilsForm.Til)
+		err = app.models.TilsM.Update(&TilsForm.Til)
 		if err != nil {
 			log.Printf("app.til.UpdateExisting(): %v\n", err)
 			// TODO: send some notification to the UI
@@ -121,7 +118,7 @@ func (app *application) TilsPost(w http.ResponseWriter, r *http.Request) {
 
 func (app *application) Delete_til(w http.ResponseWriter, r *http.Request) {
 	path := r.PathValue("path")
-	err := app.tils.Delete(path)
+	err := app.models.TilsM.Delete(path)
 	if err != nil {
 		fmt.Printf("delete err:%v", err)
 		return

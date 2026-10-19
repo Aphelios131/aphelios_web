@@ -17,10 +17,7 @@ type templateData struct {
 	HTML            template.HTML
 	Flash           string
 	IsAuthenticated bool //判断用户是否登陆
-	Title           string
-	RootPath        string
 	TILs            models.TILs
-	SideBars        bool
 	Form            any
 	CSRFToken       string
 	Blogs           models.Blogs

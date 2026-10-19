@@ -2,15 +2,22 @@ package main
 
 import (
 	"aphelios_website/validator"
+	"database/sql"
+	"errors"
 	"net/http"
 )
 
 // Get Home
 func (app *application) Home(w http.ResponseWriter, r *http.Request) {
 	//`ParseFiles` 支持多文件 多个文件时，**第一个文件名字作为模板名**，其他作为关联模板。
-	page, err := app.pages.Get("Home")
+	page, err := app.models.PagesM.Get("Home")
+	if errors.Is(err, sql.ErrNoRows) {
+		data := app.NewtemplateData(r)
+		app.templateExcute(w, "home.html", 200, data)
+		return
+	}
 	if err != nil {
-		app.logError(r, err)
+		app.logError(w, r, err)
 		return
 	}
 	data := app.NewtemplateData(r)
@@ -19,31 +26,6 @@ func (app *application) Home(w http.ResponseWriter, r *http.Request) {
 	flash := app.sessionManager.PopString(r.Context(), "flash")
 	data.Flash = flash
 	app.templateExcute(w, "home.html", 200, data)
-
-	// tmp, err := template.ParseFiles("./ui/html/base.html", "./ui/html/pages/home.html", "./ui/html/partials/nav.html")
-	// if err != nil {
-	// 	fmt.Printf("html ParseFiles fail:%v", err)
-	// 	return
-	// }
-
-	// err = tmp.ExecuteTemplate(w, "base", page)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	return
-	// }
-
-	// tpl, ok := app.templateCache["home.html"]
-	// if !ok {
-	// 	fmt.Printf("the template %v dones not exist", page)
-	// 	return
-	// }
-
-	// err = tpl.ExecuteTemplate(w, "base", page)
-	// if err != nil {
-	// 	fmt.Printf("excutetemplate err:%s", err)
-	// 	return
-	// }
-	//w.Write([]byte("This is my website"))
 }
 
 type UserSignupForm struct {
@@ -59,26 +41,41 @@ func (app *application) SignUp(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) SignUpPost(w http.ResponseWriter, r *http.Request) {
-
 	var userSignupForm UserSignupForm 
 	err := app.decodePostForm(r, &userSignupForm)
 	if err != nil {
-		app.logError(r, err)
+		app.logError(w, r, err)
 		return
 	}
 
 	//验证邮箱格式
-	userSignupForm.CheckField(validator.Matches(userSignupForm.Email, validator.EmailRX), "Email", "Email格式不符合")
+	userSignupForm.CheckField(validator.Matches(userSignupForm.Email, validator.EmailRX), "email", "Email格式不符合")
 
 	if !userSignupForm.Valid() {
 		data := app.NewtemplateData(r)
 		data.Form = userSignupForm
 		app.templateExcute(w, "signup.html", http.StatusUnprocessableEntity, data)
+		return
 	}
 
-	err = app.users.Insert(userSignupForm.Email, userSignupForm.Password)
+	//判断邮箱是否已注册
+	exists, err := app.models.UsersM.GetEmail(userSignupForm.Email)
 	if err != nil {
-		app.logError(r, err)
+		app.logError(w, r, err)
+		return
+	}
+
+	if exists {
+		data := app.NewtemplateData(r)
+		userSignupForm.AddFieldError("email", "邮箱已注册")
+		data.Form = userSignupForm
+		app.templateExcute(w, "signup.html", http.StatusUnprocessableEntity, data)
+		return
+	}
+
+	err = app.models.UsersM.Insert(userSignupForm.Email, userSignupForm.Password)
+	if err != nil {
+		app.logError(w, r, err)
 		return
 	}
 	app.sessionManager.Put(r.Context(), "flash", "Your signup was successful. Please log in.")
@@ -101,19 +98,19 @@ func (app *application) LoginPost(w http.ResponseWriter, r *http.Request) {
 	}
 	err := app.decodePostForm(r, &UserLoginForm)
 	if err != nil {
-		app.logError(r, err)
+		app.logError(w, r, err)
 		return
 	}
 
-	id, err := app.users.Get(UserLoginForm.Email, UserLoginForm.Password)
+	id, err := app.models.UsersM.Get(UserLoginForm.Email, UserLoginForm.Password)
 	if err != nil {
-		app.logError(r, err)
+		app.logError(w, r, err)
 		return
 	}
 
 	err = app.sessionManager.RenewToken(r.Context())
 	if err != nil {
-		app.logError(r, err)
+		app.logError(w, r, err)
 		return
 	}
 
@@ -124,7 +121,7 @@ func (app *application) LoginPost(w http.ResponseWriter, r *http.Request) {
 func (app *application) Logout(w http.ResponseWriter, r *http.Request) {
 	err := app.sessionManager.RenewToken(r.Context())
 	if err != nil {
-		app.logError(r, err)
+		app.logError(w, r, err)
 		return
 	}
 	app.sessionManager.Remove(r.Context(), "authenticatedUserID")

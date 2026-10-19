@@ -61,3 +61,12 @@ func (um *UserModel) GetId(id int) (bool, error) {
 	return exists, err
 
 }
+
+
+func (um *UserModel) GetEmail(email string) (bool, error) {
+	var exists bool
+	stmt := `select exists(select true from users where email = $1)`
+	err := um.DB.QueryRow(stmt, email).Scan(&exists)
+	return exists, err
+
+}

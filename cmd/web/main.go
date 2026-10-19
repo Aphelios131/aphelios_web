@@ -16,13 +16,10 @@ import (
 )
 
 type application struct {
-	pages          *models.PageModel
-	tils           *models.TilModel
+	models models.Models
 	templateCache  map[string]*template.Template
 	formDecoder    *form.Decoder //表单解析
-	users          *models.UserModel
 	sessionManager *scs.SessionManager
-	blogs          *models.BlogModel
 	logger         *slog.Logger
 }
 
@@ -105,14 +102,11 @@ func main() {
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
 
 	app := &application{
-		pages:          &models.PageModel{DB: db},
 		templateCache:  templateHtml,
 		formDecoder:    formDecoder,
-		users:          &models.UserModel{DB: db},
 		sessionManager: sessionManager,
-		tils:           &models.TilModel{DB: db},
-		blogs:          &models.BlogModel{DB: db},
 		logger:         logger,
+		models: models.NewModel(db),
 	}
 
 	err = app.server()

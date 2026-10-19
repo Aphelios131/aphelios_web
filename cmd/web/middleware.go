@@ -35,7 +35,7 @@ func (app *application) authenticates(next http.Handler) http.Handler {
 			return
 		}
 
-		exists, err := app.users.GetId(id)
+		exists, err := app.models.UsersM.GetId(id)
 		if err != nil {
 			fmt.Printf("Getid err:%v", err)
 			return
@@ -58,6 +58,13 @@ func preventCSRF(next http.Handler) http.Handler {
 		Secure:   true,
 	})
 
+	// origins, err := nosurf.StaticOrigins(
+	// "http://47.122.112.40:8080",
+	// )
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// csrfHandler.SetIsAllowedOriginFunc(origins)
 	return csrfHandler
 }
 
@@ -65,10 +72,13 @@ func preventCSRF(next http.Handler) http.Handler {
 func (app *application) recoverPanic(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
+			// 使用内置的 recover() 函数检查是否发生了 panic。
+			// 如果发生了 panic，recover() 将返回 panic 值。如果没有发生 panic，它将返回 nil。
 			pv := recover()
 			if pv != nil {
+				// 如果发生 panic，则在响应中设置“Connection: close”标头。这将触发 Go 的 HTTP 服务器在发送响应后自动关闭当前连接。
 				w.Header().Set("Connection", "close")
-				app.logError(r, fmt.Errorf("%v", pv))
+				app.logError(w, r, fmt.Errorf("%v", pv))
 			}
 		}()
 		

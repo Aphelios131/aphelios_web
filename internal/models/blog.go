@@ -1,6 +1,7 @@
 package models
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"html/template"
@@ -33,7 +34,10 @@ type BlogModel struct {
 func (Bm *BlogModel) GetAll() (Blogs, error) {
 	stmt := `select id, path, title, category, summary, text, created_at, updated_at from  blog order by created_at desc;`
 
-	rows, err := Bm.DB.Query(stmt)
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	rows, err := Bm.DB.QueryContext(ctx, stmt)
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +75,11 @@ func (Bm *BlogModel) GetAll() (Blogs, error) {
 func (bm *BlogModel) GetByPath(path string) (Blog, error) {
 	stmt := `select id, title, category, summary, text, created_at, updated_at from blog 
 	where path = ?`
-	row := bm.DB.QueryRow(stmt, path)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	row := bm.DB.QueryRowContext(ctx, stmt, path)
 
 	var blog Blog
 	err := row.Scan(
@@ -101,7 +109,10 @@ func (bm *BlogModel) Insert(blog Blog) error {
 	stmt := `insert into blog (path, title, category, summary, text) values
 	(?, ?, ?, ?, ?)`
 
-	_, err := bm.DB.Exec(stmt, blog.Path, blog.Title, blog.Category, blog.Summary, blog.Text)
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	_, err := bm.DB.ExecContext(ctx, stmt, blog.Path, blog.Title, blog.Category, blog.Summary, blog.Text)
 	if err != nil {
 		fmt.Printf("insert exec err:%v", err)
 		return err
@@ -119,7 +130,10 @@ func (bm *BlogModel) Update(blog Blog) error {
 		text = ?,
 		updated_at = CURRENT_TIMESTAMP
 		WHERE id = ?;`
-	_, err := bm.DB.Exec(stmt, blog.Path, blog.Title, blog.Category, blog.Summary, blog.Text, blog.Id)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	_, err := bm.DB.ExecContext(ctx, stmt, blog.Path, blog.Title, blog.Category, blog.Summary, blog.Text, blog.Id)
 	if err != nil {
 		return err
 	}

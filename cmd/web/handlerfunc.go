@@ -28,11 +28,29 @@ func (app *application) Home(w http.ResponseWriter, r *http.Request) {
 	app.templateExcute(w, "home.html", 200, data)
 }
 
-type UserSignupForm struct {
-		Email    string `form:"email"`
-		Password string `form:"password"`
-		validator.Validator `form:"-"`
+func (app *application) About(w http.ResponseWriter, r *http.Request) {
+	page, err := app.models.PagesM.Get("About")
+	if errors.Is(err, sql.ErrNoRows) {
+		data := app.NewtemplateData(r)
+		app.templateExcute(w, "about.html", 200, data)
+		return
+	}
+	if err != nil {
+		app.logError(w, r, err)
+		return
+	}
+	data := app.NewtemplateData(r)
+	data.Page = *page
+	data.HTML = page.HTMLContent
+	app.templateExcute(w, "about.html", 200, data)
 }
+
+type UserSignupForm struct {
+	Email               string `form:"email"`
+	Password            string `form:"password"`
+	validator.Validator `form:"-"`
+}
+
 // Get SignUp
 func (app *application) SignUp(w http.ResponseWriter, r *http.Request) {
 	data := app.NewtemplateData(r)
@@ -41,7 +59,7 @@ func (app *application) SignUp(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) SignUpPost(w http.ResponseWriter, r *http.Request) {
-	var userSignupForm UserSignupForm 
+	var userSignupForm UserSignupForm
 	err := app.decodePostForm(r, &userSignupForm)
 	if err != nil {
 		app.logError(w, r, err)

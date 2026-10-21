@@ -16,7 +16,7 @@ import (
 )
 
 type application struct {
-	models models.Models
+	models         models.Models
 	templateCache  map[string]*template.Template
 	formDecoder    *form.Decoder //表单解析
 	sessionManager *scs.SessionManager
@@ -106,7 +106,7 @@ func main() {
 		formDecoder:    formDecoder,
 		sessionManager: sessionManager,
 		logger:         logger,
-		models: models.NewModel(db),
+		models:         models.NewModel(db),
 	}
 
 	err = app.server()

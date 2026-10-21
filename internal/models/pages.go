@@ -39,11 +39,11 @@ type PageModel struct {
 func (pg *PageModel) Get(name string) (*Page, error) {
 	var GetPage Page
 	stmt := `select  id, name, version, content, created_at from pages where name = $1 order by version desc limit 1`
-	
+
 	//创建一个超时时间为 3 秒的上下文。
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
-	
+
 	row := pg.DB.QueryRowContext(ctx, stmt, name)
 	err := row.Scan(
 		&GetPage.Id,

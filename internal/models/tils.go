@@ -1,6 +1,7 @@
 package models
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"html/template"
@@ -33,7 +34,10 @@ type TilModel struct {
 func (tilm *TilModel) GetAll() (TILs, error) {
 	stmt := `select id, path, title, category, summary, created_at, updated_at from til order by created_at desc`
 
-	rows, err := tilm.DB.Query(stmt)
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	rows, err := tilm.DB.QueryContext(ctx, stmt)
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +76,11 @@ func (tilm *TilModel) GetAll() (TILs, error) {
 // 路径查询
 func (tilm *TilModel) GetByPath(path string) (Til, error) {
 	stmt := `select id, title, category, summary, text, created_at, updated_at from til where path = $1`
-	row := tilm.DB.QueryRow(stmt, path)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	row := tilm.DB.QueryRowContext(ctx, stmt, path)
 
 	var Til Til
 	err := row.Scan(&Til.Id, &Til.Title, &Til.Category, &Til.Summary, &Til.Text, &Til.CreatedAt, &Til.UpdatedAt)
@@ -91,7 +99,11 @@ func (tilm *TilModel) GetByPath(path string) (Til, error) {
 func (tilm *TilModel) Insert(t *Til) error {
 	stmt := `insert into til (path, title, category, summary, text)
 	values ($1,$2,$3,$4,$5)`
-	_, err := tilm.DB.Exec(stmt, t.Path, t.Title, t.Category, t.Summary, t.Text)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	_, err := tilm.DB.ExecContext(ctx, stmt, t.Path, t.Title, t.Category, t.Summary, t.Text)
 	if err != nil {
 		return err
 	}
@@ -107,7 +119,11 @@ func (tilm *TilModel) Update(t *Til) error {
 		text = $5,
 		updated_at = CURRENT_TIMESTAMP
 		WHERE id = $6;`
-	_, err := tilm.DB.Exec(stmt, t.Path, t.Title, t.Category, t.Summary, t.Text, t.Id)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	_, err := tilm.DB.ExecContext(ctx, stmt, t.Path, t.Title, t.Category, t.Summary, t.Text, t.Id)
 	if err != nil {
 		return err
 	}
@@ -117,7 +133,11 @@ func (tilm *TilModel) Update(t *Til) error {
 
 func (tilm *TilModel) Delete(path string) error {
 	stmt := `delete from til where path = $1`
-	_, err := tilm.DB.Exec(stmt, path)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	_, err := tilm.DB.ExecContext(ctx, stmt, path)
 	if err != nil {
 		return err
 	}

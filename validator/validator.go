@@ -11,9 +11,8 @@ type Validator struct {
 }
 
 var (
-    EmailRX = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+	EmailRX = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
 )
-
 
 func (v *Validator) Valid() bool {
 	return len(v.FieldErrors) == 0
@@ -49,5 +48,5 @@ func MaxChars(value string, n int) bool {
 
 // Matches 函数在字符串值与特定正则表达式模式匹配时返回 true。
 func Matches(value string, rx *regexp.Regexp) bool {
-    return rx.MatchString(value)
+	return rx.MatchString(value)
 }

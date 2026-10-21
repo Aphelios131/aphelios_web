@@ -59,7 +59,7 @@ func preventCSRF(next http.Handler) http.Handler {
 	})
 
 	// origins, err := nosurf.StaticOrigins(
-	// "http://47.122.112.40:8080",
+	// 	"http://47.122.112.40:8080",
 	// )
 	// if err != nil {
 	// 	panic(err)
@@ -67,7 +67,6 @@ func preventCSRF(next http.Handler) http.Handler {
 	// csrfHandler.SetIsAllowedOriginFunc(origins)
 	return csrfHandler
 }
-
 
 func (app *application) recoverPanic(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -81,7 +80,7 @@ func (app *application) recoverPanic(next http.Handler) http.Handler {
 				app.logError(w, r, fmt.Errorf("%v", pv))
 			}
 		}()
-		
+
 		next.ServeHTTP(w, r)
 
 	})

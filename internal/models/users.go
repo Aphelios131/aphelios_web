@@ -1,10 +1,13 @@
 package models
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
-	"golang.org/x/crypto/bcrypt"
 	"strings"
+	"time"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type Users struct {
@@ -26,9 +29,12 @@ func (um *UserModel) Insert(email, password string) error {
 	email = strings.ToLower(email)
 	Password_hash := string(hash_byte)
 
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
 	stmt := `insert into users (email, password_hash) values ($1,$2)`
 
-	_, err = um.DB.Exec(stmt, email, Password_hash)
+	_, err = um.DB.ExecContext(ctx, stmt, email, Password_hash)
 	if err != nil {
 		return err
 	}
@@ -41,7 +47,11 @@ func (um *UserModel) Get(email, password string) (int, error) {
 	var password_hash []byte
 	email = strings.ToLower(email)
 	stmt := `select id, password_hash from users where email = $1`
-	rows := um.DB.QueryRow(stmt, email)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	rows := um.DB.QueryRowContext(ctx, stmt, email)
 	err := rows.Scan(&id, &password_hash)
 	if err != nil {
 		return 0, fmt.Errorf("scanf data err:%w", err)
@@ -57,11 +67,14 @@ func (um *UserModel) Get(email, password string) (int, error) {
 func (um *UserModel) GetId(id int) (bool, error) {
 	var exists bool
 	stmt := `select exists(select true from users where id = $1)`
-	err := um.DB.QueryRow(stmt, id).Scan(&exists)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	err := um.DB.QueryRowContext(ctx, stmt, id).Scan(&exists)
 	return exists, err
 
 }
-
 
 func (um *UserModel) GetEmail(email string) (bool, error) {
 	var exists bool

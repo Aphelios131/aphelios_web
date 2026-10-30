@@ -7,6 +7,7 @@ import (
 	"html/template"
 	"time"
 
+	"github.com/microcosm-cc/bluemonday"
 	"github.com/russross/blackfriday/v2"
 )
 
@@ -62,7 +63,8 @@ func (tilm *TilModel) GetAll() (TILs, error) {
 		}
 
 		htmlBytes := blackfriday.Run([]byte(til.Summary))
-		til.HTML.Summary = template.HTML(htmlBytes)
+		body := bluemonday.UGCPolicy().SanitizeBytes(htmlBytes)
+		til.HTML.Summary = template.HTML(body)
 		tils = append(tils, &til)
 	}
 
@@ -90,7 +92,8 @@ func (tilm *TilModel) GetByPath(path string) (Til, error) {
 	}
 
 	htmlBytes := blackfriday.Run([]byte(Til.Text))
-	Til.HTML.Text = template.HTML(htmlBytes)
+	body := bluemonday.UGCPolicy().SanitizeBytes(htmlBytes)
+	Til.HTML.Text = template.HTML(body)
 	Til.Path = path
 	return Til, nil
 

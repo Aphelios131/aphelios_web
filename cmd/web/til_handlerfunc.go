@@ -4,6 +4,7 @@ import (
 	"aphelios_website/internal/models"
 	"aphelios_website/validator"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 )
@@ -76,6 +77,25 @@ func (app *application) TilsPost(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("decodePostForm err:%v", err)
 		return
 	}
+
+	//博客正文为空,读取上传的文件
+	if TilsForm.Til.Text == "" {
+		file, _, err := r.FormFile("upload_file")
+		if err != nil {
+			fmt.Println("获取上传文件失败:", err)
+			return
+		}
+		defer file.Close()
+		content, err := io.ReadAll(file)
+		if err != nil {
+			fmt.Println("read file fail:", err)
+			return
+		}
+
+		TilsForm.Til.Text = string(content)
+	}
+
+	TilsForm.Til.Text = CleanMarkdownSource(TilsForm.Til.Text)
 
 	TilsForm.CheckField(validator.NotBlack(TilsForm.Til.Path), "path", "This field cannot be blank")
 	TilsForm.CheckField(validator.MaxChars(TilsForm.Til.Path, 20), "path", "This field cannot be more than 20 characters long")

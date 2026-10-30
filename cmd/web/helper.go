@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"errors"
 	"net/http"
 
@@ -26,4 +27,14 @@ func (app *application) decodePostForm(r *http.Request, dst any) error {
 	}
 
 	return nil
+}
+
+// CleanMarkdownSource 统一清洗markdown原始文本，文件上传、表单编辑都调用它
+func CleanMarkdownSource(raw string) string {
+	b := []byte(raw)
+	// 顺序：先 \r\n，再单独 \r，去掉BOM
+	b = bytes.ReplaceAll(b, []byte("\r\n"), []byte("\n"))
+	b = bytes.ReplaceAll(b, []byte("\r"), []byte("\n"))
+	b = bytes.TrimPrefix(b, []byte("\xef\xbb\xbf"))
+	return string(b)
 }

@@ -33,8 +33,11 @@
         </main>
 
         <script>
-        // DOM加载完成后自动高亮页面里所有 <pre><code>
         document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('pre code:not([class*="language-"])').forEach(el => {
+            hljs.highlightElement(el);
+        })
+        // 原本带 language-xxx 的块正常走 highlightAll
         hljs.highlightAll();
         });
         </script>
